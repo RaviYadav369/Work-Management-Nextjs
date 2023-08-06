@@ -1,10 +1,12 @@
 import { connetToDB } from "@database/db";
 import User from "@models/user";
 import { NextResponse } from "next/server";
+import jwt from 'jsonwebtoken'
 
-connetToDB()
+
 
 export async function PUT(request, { params }) {
+    await connetToDB()
     try {
         const { userId } = params;
         const { userName, phone, course } = await request.json()
@@ -25,13 +27,20 @@ export async function PUT(request, { params }) {
 }
 
 export async function GET(request, { params }) {
+    await connetToDB()
     try {
         const { userId } = params;
-        const User = await User.findById(userId)
+        const getAuthToken = request.headers.get('Authorization')
+        const decode = jwt.verify(getAuthToken, process.env.JWT_SECRET)
+        if (!getAuthToken && !decode) {
+            return new Response(JSON.stringify("Invalid Token"), { status: 404 })
+        }
+
+        const user = await User.findById(userId)
         if (!User) {
             return NextResponse.json({ message: "User Does Not Exits" }, { status: 404 })
         }
-        return NextResponse.json(User, { status: 200 })
+        return NextResponse.json(user, { status: 200 })
 
     } catch (error) {
         return NextResponse.json({ message: error }, { status: 500 })

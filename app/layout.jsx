@@ -1,21 +1,24 @@
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
+import Provider from "@components/Provider";
 import "@styles/globals.css";
 
 export const metadata = {
-  title: "Promptopia",
-  description: "Discover & Share AI Promots",
+  title: "Work-Management",
+  description: "Manage The work",
 };
 
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <div>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-        </div>
+        <Provider>
+          <div>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </div>
+        </Provider>
       </body>
     </html>
   );

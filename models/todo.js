@@ -1,5 +1,4 @@
 import mongoose, { Schema, model, models } from "mongoose";
-import User from "./user";
 
 const todoSchema = new Schema(
     {
@@ -26,6 +25,6 @@ const todoSchema = new Schema(
     }
 )
 
-const Todo = mongoose.models.Todo || mongoose.model("Todos", todoSchema)
+const Todo = mongoose.models.Todo || mongoose.model("Todo", todoSchema)
 
 export default Todo
