@@ -4,7 +4,7 @@ const userSchema = new Schema(
     {
         userName: {
             type: String,
-            require: [true, "User Name is Required"],
+            // require: [true, "User Name is Required"],
             min: 3,
         },
         email: {
@@ -14,15 +14,15 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            require: [true, "Password is Required"],
+            // require: [true, "Password is Required"],
         },
         phone: {
             type: Number,
-            require: [true, "Phone is Required"]
+            // require: [true, "Phone is Required"]
         },
         course: {
             type: String,
-            required: [true, "Course is Required"],
+            // required: [true, "Course is Required"],
         }
 
     }

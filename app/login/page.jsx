@@ -1,28 +1,48 @@
 "use client";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { getProviders, signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-const SignIn = () => {
+const LoginForm = () => {
   const router = useRouter();
+
+  const [providers, setproviders] = useState(null);
+
+  useEffect(() => {
+    const setupProvider = async () => {
+      const response = await getProviders();
+      setproviders(response);
+    };
+    setupProvider();
+  }, []);
+
   const [data, setdata] = useState({
     email: "",
     password: "",
   });
+  const searchParam = useSearchParams();
+  const callbackUrl = searchParam.get("callbackUrl") || "/todo";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("/api/login", data);
-      console.log(response);
       setdata({
         email: "",
         password: "",
       });
-      toast.success("Logged In User Succesfylly");
-      router.push("/");
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+        callbackUrl,
+      });
+      console.log(response);
+      if (!response?.error) {
+        router.push(callbackUrl);
+      } else {
+        console.log("Invalid email or password");
+      }
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -74,8 +94,18 @@ const SignIn = () => {
           </button>
         </div>
       </form>
+      {providers &&
+        Object.values(providers).map((provider) => (
+          <button
+            className=" mt-7 my-5 p-2 font-semibold bg-blue-500 rounded-xl text-white"
+            onClick={() => signIn(provider.id)}
+            key={provider.name}
+          >
+            Sign In With {provider.name}
+          </button>
+        ))}
     </section>
   );
 };
 
-export default SignIn;
+export default LoginForm;
